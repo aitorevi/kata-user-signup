@@ -6,12 +6,23 @@ export class UserService {
 
     save(email: string) {
 
-        if (email !== "") {
+        if (this.isEmailNotEmpty(email)) {
             this.userRepository.save(email)
         }
-        if (email && !email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+        const notHaveEmailFormat = this.checkCorrectFormatOf(email);
+        if (notHaveEmailFormat) {
             throw new Error(`${email} not have the email format`)
         }
+    }
+
+    private isEmailNotEmpty(email: string) {
+        return email !== "";
+    }
+
+    private checkCorrectFormatOf(email: string) {
+
+        const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        return email && !email.match(emailRegex);
     }
 
     getUsers() {
