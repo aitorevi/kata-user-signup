@@ -9,10 +9,17 @@ import {FakeDataBase} from "../core/FakeDataBase";
 ['example@gmail.com'], 'example@gmail.com' ->  "error that email already exists"
  */
 describe('Sign-up', () => {
+
+    let fakeDB
+    let service
+    let spy
+    beforeEach(() => {
+        fakeDB = new FakeDataBase()
+        service = new UserService(fakeDB)
+        spy = jest.spyOn(service, "saveUserRepository")
+    })
+
     it('not add user if email it´s empty', () => {
-        const fakeUser = new FakeDataBase()
-        const service = new UserService(fakeUser)
-        const spy = jest.spyOn(service, "saveUserRepository")
         service.saveUserRepository("")
 
         const users = service.getUsersFromRepository()
@@ -21,9 +28,6 @@ describe('Sign-up', () => {
     })
 
     it('throws an error message if email not have the correct format', () => {
-        const fakeUser = new FakeDataBase()
-        const service = new UserService(fakeUser)
-        const spy = jest.spyOn(service, "saveUserRepository")
         const email = "notAnEmail.com"
 
 
@@ -33,9 +37,6 @@ describe('Sign-up', () => {
     });
 
     it('save user in repository if email have the correct format', () => {
-        const fakeDB = new FakeDataBase()
-        const service = new UserService(fakeDB)
-        const spy = jest.spyOn(service, "saveUserRepository")
         const email = "example@email.com"
 
         service.saveUserRepository(email)
