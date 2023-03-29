@@ -1,31 +1,33 @@
-import {UserRepository} from "@core/userRepository";
+import { UserRepository } from "@core/userRepository";
 
 export class UserService {
-    constructor(private readonly userRepository: UserRepository) {
+    constructor(private readonly userRepository: UserRepository) {}
+
+    saveUserInRepository(email: string) {
+        const isEmailNotEmpty = email !== ""
+        this.checkCorrectFormOf(email)
+        this.checkUserExistInRepositoryBy(email)
+
+        if (isEmailNotEmpty) {
+            this.userRepository.save(email)
+        }
     }
 
-    saveUserRepository(email: string) {
+    private checkUserExistInRepositoryBy(email: string) {
+        const users = this.userRepository.getUsers()
 
-        const notHaveEmailFormat = this.checkCorrectFormatOf(email);
+        if (users.includes(email)) {
+            throw new Error(`${email} already exits`)
+        }
+    }
+
+    private checkCorrectFormOf(email: string) {
+        const emailFormat = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
+        const notHaveEmailFormat = email && !email.match(emailFormat)
+
         if (notHaveEmailFormat) {
             throw new Error(`${email} not have the email format`)
         }
-
-        if (this.isEmailNotEmpty(email)) {
-            this.userRepository.save(email)
-        }
-
-
-    }
-
-    private isEmailNotEmpty(email: string) {
-        return email !== "";
-    }
-
-    private checkCorrectFormatOf(email: string) {
-
-        const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
-        return email && !email.match(emailRegex);
     }
 
     getUsersFromRepository() {
