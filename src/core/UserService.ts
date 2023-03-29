@@ -4,15 +4,18 @@ export class UserService {
     constructor(private readonly userRepository: UserRepository) {
     }
 
-    save(email: string) {
+    saveUserRepository(email: string) {
 
-        if (this.isEmailNotEmpty(email)) {
-            this.userRepository.save(email)
-        }
         const notHaveEmailFormat = this.checkCorrectFormatOf(email);
         if (notHaveEmailFormat) {
             throw new Error(`${email} not have the email format`)
         }
+
+        if (this.isEmailNotEmpty(email)) {
+            this.userRepository.save(email)
+        }
+
+
     }
 
     private isEmailNotEmpty(email: string) {
@@ -25,7 +28,7 @@ export class UserService {
         return email && !email.match(emailRegex);
     }
 
-    getUsers() {
+    getUsersFromRepository() {
         return this.userRepository.getUsers()
     }
 }
